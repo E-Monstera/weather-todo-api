@@ -16,6 +16,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, "mongo connection error"));
 
 var indexRouter = require('./routes/index');
+let todoRouter = require('./routes/todo');
 var app = express();
 
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/', todoRouter);
 
 
 

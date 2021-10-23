@@ -49,15 +49,19 @@ exports.signup_user = [
 ]
 
 exports.login_user = function (req, res, next) {
+    // email, rather than username is used for authentication
+    // Destructure email and password
+    let { email, password } = req.body;
+
     //Check if user exists in the database
-    User.findOne({username: req.body.username})
+    User.findOne({ email})
         .then(user => {
             if (!user) {
                 //User doesn't exist, return error message
                 return res.status(400).json({ message: 'Incorrect email' });
             } else {
                 // User exists, check that their password matches
-                bcrypt.compare(req.body.password, user.password, (err, result) => {
+                bcrypt.compare(password, user.password, (err, result) => {
                     if (result) {
                         //Authentication passed, create the token and return it to the client
                         const opts = {};
