@@ -10,6 +10,7 @@ const todoController = require('../controllers/todoController')
 //This grabs all users items and projects. 
 router.get('/todos', passport.authenticate('jwt', { session: false }), todoController.get_todos);
 
+//----------------------------------ITEMS-------------------------
 //GET single item - needed?
 // router.get('/item/:itemId', passport.authenticate('jwt', { session: false }), todoController.get_item);
 
@@ -22,14 +23,15 @@ router.put('/item/:id', passport.authenticate('jwt', { session: false }), todoCo
 // DELETE single item
 router.delete('/item/:id', passport.authenticate('jwt', { session: false }), todoController.delete_item);
 
+//-----------------Projects--------------------------------------------------
+//GET user projects
+router.get('/proj', passport.authenticate('jwt', { session: false }), todoController.get_projs);
+
 //POST single proj - Creates a project
 router.post('/proj', passport.authenticate('jwt', { session: false }), todoController.post_proj);
 
-//EDIT single item
+//PUT single item
 router.put('/proj/:id', passport.authenticate('jwt', { session: false }), todoController.put_proj);
-
-//GET user projects
-router.get('/proj', passport.authenticate('jwt', { session: false }), todoController.get_projs);
 
 //DELETE single proj - Deletes a project - First checks for any dependent items
 router.delete('/proj/:id', passport.authenticate('jwt', { session: false }), todoController.delete_proj);
