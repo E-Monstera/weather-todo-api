@@ -1,7 +1,9 @@
 const { default: axios } = require('axios');
 var express = require('express');
 var router = express.Router();
-require('dotenv').config()
+require('dotenv').config();
+const passport = require('passport')
+const userController = require('../controllers/userController')
 
 
 /* GET home page. */
@@ -25,5 +27,17 @@ router.get('/weather/:city', async(req, res, next) => {
     next(err)
 }
 })
+
+//-------------------------------------------------------------------------------------
+// Routes for managing users
+
+//Route to signup a user
+router.post('/', userController.signup_user)
+
+// Route to login user
+router.post('/session', userController.login_user);
+
+// Route authenticates user upon returning to site
+router.get('/session', passport.authenticate('jwt', { session: false }), userController.auth_user);
 
 module.exports = router;
