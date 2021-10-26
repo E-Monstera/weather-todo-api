@@ -151,12 +151,13 @@ exports.post_item = [
     body('desc').escape().trim(),
 
     (req, res, next) => {
+        console.log('posting item')
         // If there were errors, reject the submission and return the user
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.status(400).json({ errArr: errors.array() })
         } else {    //Create the new item and save to database
-
+            console.log('hit')
             //Check if user added a description
             let desc = '';
             if (req.body.desc) {
@@ -165,10 +166,10 @@ exports.post_item = [
 
             //Check if item belongs to a project
             let proj = null;
-            if (req.body.project) {
+            if (req.body.project !== 'none') {
                 proj = req.body.project
             }
-
+            console.log('saving')
             let newItem = new Item({
                 title: req.body.title,
                 desc: desc,
@@ -180,8 +181,11 @@ exports.post_item = [
             })
                 .save((err, result) => {
                     if (err) {
+                        console.log('error')
+                        console.log(err)
                         return next(err)
                     } else {
+                        console.log('success')
                         res.status(200).json({ message: 'new item created', item: result })
                     }
                 })

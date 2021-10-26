@@ -40,4 +40,7 @@ router.post('/session', userController.login_user);
 // Route authenticates user upon returning to site
 router.get('/session', passport.authenticate('jwt', { session: false }), userController.auth_user);
 
+//Route to update a users location
+router.put('/user/location', passport.authenticate('jwt', { session: false }), userController.update_user);
+
 module.exports = router;

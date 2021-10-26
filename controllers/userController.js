@@ -99,3 +99,37 @@ exports.auth_user = function (req, res, next) {
     console.log('in auth_user')
     return res.status(200).json({ user: req.user });
 }
+
+exports.update_user = [
+        // sanitize user input
+        body('location', 'Location is required').escape().trim(),
+    
+        (req, res, next) => {
+            const errors = validationResult(req);
+    
+            if (!errors.isEmpty()) {
+                // There were errors during validation, return 
+                res.status(400).json({ errArr: errors.array() });
+            } else {
+                //There were no errors, find and update the user
+                User.findById(req.user._id)
+                .exec((err, results) => {
+                    if (err) {
+                        return next(err)
+                    } else {
+                        //Update the users location
+                        let user = results;
+                        user.location = req.body.location;
+                        //Save in db
+                        User.findByIdAndUpdate(req.user._id, user, {}, ((err, result) => {
+                            if (err) {
+                                return next(err);
+                            } else {
+                                res.status(200).json({message: 'User location updated'})
+                            }
+                        }))
+                    }
+                })
+            }
+        }
+]

@@ -30,7 +30,7 @@ router.get('/proj', passport.authenticate('jwt', { session: false }), todoContro
 //POST single proj - Creates a project
 router.post('/proj', passport.authenticate('jwt', { session: false }), todoController.post_proj);
 
-//PUT single item
+//PUT single project
 router.put('/proj/:id', passport.authenticate('jwt', { session: false }), todoController.put_proj);
 
 //DELETE single proj - Deletes a project - First checks for any dependent items
