@@ -96,7 +96,7 @@ exports.put_proj = [
                     }
                 } else {
                     //Project successfully updated
-                    res.status(200).json({message: 'Project updated', project})
+                    res.status(200).json({ message: 'Project updated', project })
                 }
             })
         }
@@ -215,7 +215,9 @@ exports.put_item = [
                         }
                     } else {
                         // Success! Find what's been updated
-                        let item = JSON.parse(JSON.stringify(results));
+                        console.log(results)
+                        let itemTemp = JSON.parse(JSON.stringify(results));
+                        let item = Object.assign({}, itemTemp);
                         if (req.body.title) {            //User changed title
                             item.title = req.body.title;
                         }
@@ -231,9 +233,11 @@ exports.put_item = [
                         if (req.body.project) {             //User changed associated project
                             item.project = req.body.project
                         }
-                        if (req.body.completed) {           //User changed completed
-                            item.completed = req.body.completed
-                        }
+                        item.completed = req.body.completed
+
+                        // console.log(req.body)
+                        // console.log('new')
+                        // console.log(item)
 
                         //Update item
                         Item.findByIdAndUpdate(req.params.id, item, {}, (err, result) => {
