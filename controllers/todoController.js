@@ -1,39 +1,44 @@
 const Item = require('../models/Item');
 const Project = require('../models/Project');
+const Note = require('../models/Note');
 const { body, validationResult } = require('express-validator');
 const async = require('async');
 const { findByIdAndDelete } = require('../models/Item');
 
 // Method to grab all todos for a single user
-exports.get_todos = function (req, res, next) {
+exports.get_planner = function (req, res, next) {
     //Grab all projects and items for a user
     async.parallel({
         projects: function (callback) {
             Project.find({ author: req.user._id }, callback)
         },
         items: function (callback) {
-            Item.find({ author: req.user._id }, callback)
+            Item.find({ author: req.user._id }).populate('project', 'title').exec(callback)
+        },
+        notes: function(callback) {
+            Note.find({ author: req.user._id}, callback)
         }
     }, function (err, results) {
         if (err) {  //If error, forward error
             return next(err)
         } else {
             //Success. Sort the items with their associated projects
-            let projects = results.projects.map(proj => {
-                let items = [];
-                results.items.forEach(item => {
-                    if (item.project === null) {    //Item isn't associated with a project
-                        return;
-                    } else if (item.project.toString() === proj._id.toString()) {
-                        items.push(item)
-                    }
-                })
-                return ({
-                    project: proj,
-                    items: items,
-                })
-            })
-            res.status(200).json({ items: results.items, projects })
+            // let projects = results.projects.map(proj => {
+            //     let items = [];
+            //     results.items.forEach(item => {
+            //         console.log(item.project)
+            //         if (item.project === null) {    //Item isn't associated with a project
+            //             return;
+            //         } else if (item.project.toString() === proj._id.toString()) {
+            //             items.push(item)
+            //         }
+            //     })
+            //     return ({
+            //         project: proj,
+            //         items: items,
+            //     })
+            // })
+            res.status(200).json({ items: results.items, projects:results.project, notes:results.notes })
 
         }
 

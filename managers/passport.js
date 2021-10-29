@@ -17,8 +17,6 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
     User.findById(jwt_payload.user._id)
     .exec(function (err, returnedUser) {
-        console.log('in auth user')
-        console.log(returnedUser)
         const user = {
             _id: returnedUser._id,
             username: returnedUser.username,

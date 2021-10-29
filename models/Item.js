@@ -7,7 +7,7 @@ let ItemSchema = new Schema(
         title: {type:String, required:true},
         desc: {type:String, required:false},
         priority: {type:Number, required:true},
-        project: {type:Schema.Types.ObjectId, ref:'project', required:false},
+        project: {type:Schema.Types.ObjectId, ref:'Project', required:false},
         author: {type:Schema.Types.ObjectId, ref:'User', required:true},
         due_date: {type:Date, required: true},
         completed: {type: Boolean, required: true}

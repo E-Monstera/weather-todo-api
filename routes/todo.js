@@ -4,11 +4,12 @@ var router = express.Router();
 require('dotenv').config();
 const passport = require('passport')
 const todoController = require('../controllers/todoController')
+const noteController = require('../controllers/noteController')
 
 
 /* GET user items. */
 //This grabs all users items and projects. 
-router.get('/todos', passport.authenticate('jwt', { session: false }), todoController.get_todos);
+router.get('/todos', passport.authenticate('jwt', { session: false }), todoController.get_planner);
 
 //----------------------------------ITEMS-------------------------
 //GET single item - needed?
@@ -35,6 +36,19 @@ router.put('/proj/:id', passport.authenticate('jwt', { session: false }), todoCo
 
 //DELETE single proj - Deletes a project - First checks for any dependent items
 router.delete('/proj/:id', passport.authenticate('jwt', { session: false }), todoController.delete_proj);
+
+//-----------------Notes--------------------------------------------------
+//GET user notes
+router.get('/notes', passport.authenticate('jwt', { session: false }), noteController.get_notes);
+
+//POST single note - Creates a note
+router.post('/note', passport.authenticate('jwt', { session: false }), noteController.post_note);
+
+//PUT single note
+router.put('/note/:id', passport.authenticate('jwt', { session: false }), noteController.put_note);
+
+//DELETE single note - Deletes a note 
+router.delete('/note/:id', passport.authenticate('jwt', { session: false }), noteController.delete_note);
 
 
 module.exports = router;
