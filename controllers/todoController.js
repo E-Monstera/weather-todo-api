@@ -38,7 +38,7 @@ exports.get_planner = function (req, res, next) {
             //         items: items,
             //     })
             // })
-            res.status(200).json({ items: results.items, projects:results.project, notes:results.notes })
+            res.status(200).json({ items: results.items, projects:results.projects, notes:results.notes })
 
         }
 
