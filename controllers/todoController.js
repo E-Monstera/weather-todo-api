@@ -22,24 +22,7 @@ exports.get_planner = function (req, res, next) {
         if (err) {  //If error, forward error
             return next(err)
         } else {
-            //Success. Sort the items with their associated projects
-            // let projects = results.projects.map(proj => {
-            //     let items = [];
-            //     results.items.forEach(item => {
-            //         console.log(item.project)
-            //         if (item.project === null) {    //Item isn't associated with a project
-            //             return;
-            //         } else if (item.project.toString() === proj._id.toString()) {
-            //             items.push(item)
-            //         }
-            //     })
-            //     return ({
-            //         project: proj,
-            //         items: items,
-            //     })
-            // })
             res.status(200).json({ items: results.items, projects:results.projects, notes:results.notes })
-
         }
 
 
@@ -49,6 +32,19 @@ exports.get_planner = function (req, res, next) {
 
 //---------------------------------------------------------------
 //Methods for managing projects
+
+//Method to grab all projects for a given user
+exports.get_projs = function (req, res, next) {
+    Project.find({ author: req.user._id })
+        .exec((err, results) => {
+            if (err) {
+                return next(err)
+            } else {
+                res.status(200).json(results)
+            }
+
+        })
+}
 
 //Method to create a new project
 exports.post_proj = [
@@ -108,18 +104,6 @@ exports.put_proj = [
     }
 ];
 
-//Method to grab all projects for a given user
-exports.get_projs = function (req, res, next) {
-    Project.find({ author: req.user._id })
-        .exec((err, results) => {
-            if (err) {
-                return next(err)
-            } else {
-                res.status(200).json(results)
-            }
-
-        })
-}
 
 //Function to delete a project, only works if project has no associated items
 exports.delete_proj = function (req, res, next) {
@@ -162,7 +146,6 @@ exports.post_item = [
         if (!errors.isEmpty()) {
             res.status(400).json({ errArr: errors.array() })
         } else {    //Create the new item and save to database
-            console.log('hit')
             //Check if user added a description
             let desc = '';
             if (req.body.desc) {
@@ -174,7 +157,6 @@ exports.post_item = [
             if (req.body.project !== 'none') {
                 proj = req.body.project
             }
-            console.log('saving')
             let newItem = new Item({
                 title: req.body.title,
                 desc: desc,
@@ -240,16 +222,14 @@ exports.put_item = [
                         }
                         item.completed = req.body.completed
 
-                        // console.log(req.body)
-                        // console.log('new')
-                        // console.log(item)
-
                         //Update item
-                        Item.findByIdAndUpdate(req.params.id, item, {}, (err, result) => {
+                        Item.findByIdAndUpdate(req.params.id, item, {returnDocument:'after'})
+                        .populate('project', 'title')
+                        .exec(function(err, result)  {
                             if (err) {
                                 return next(err)
                             } else {
-                                res.status(200).json({ message: 'item updated', item })
+                                res.status(200).json({ message: 'item updated', item: result })
                             }
                         })
                     }

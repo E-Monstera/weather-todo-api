@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 let NoteSchema = new Schema(
     {
         content: {type:String, required:true},
+        title: {type:String, required:true},
         author: {type:Schema.Types.ObjectId, ref:'User', required:true}
     }
 )

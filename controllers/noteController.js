@@ -14,8 +14,10 @@ exports.get_notes = function (req, res, next) {
 
 exports.post_note = [
     body('content', 'Content is required').escape().trim(),
+    body('title', 'Title is required').escape().trim(),
 
     (req, res, next) => {
+        console.log('triggered')
         // If there were errors, reject the submission and return the user
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -23,7 +25,8 @@ exports.post_note = [
         } else {
             new Note({
                 content: req.body.content,
-                author: req.user._id
+                author: req.user._id,
+                title: req.body.title
             })
             .save((err, result) => {
                 if (err) {
@@ -38,6 +41,7 @@ exports.post_note = [
 
 exports.put_note = [
     body('content', 'Content is required').escape().trim(),
+    body('title', 'Title is required').escape().trim(),
 
     (req, res, next) => {
         // If there were errors, reject the submission and return the user
@@ -47,10 +51,11 @@ exports.put_note = [
         } else {
             let note = {
                 content: req.body.content,
+                title: req.body.title,
                 author: req.user._id,
                 _id: req.params.id,
             }
-            Note.findByIdAndUpdate(req.params.id, note, {}, (err, result) => {
+            Note.findByIdAndUpdate(req.params.id, note, {returnDocument:'after'}, (err, result) => {
                 if (err) {
                     if (err.kind === 'ObjectId') {
                         res.status(400).json({ message: 'Invalid item id' })
@@ -60,7 +65,7 @@ exports.put_note = [
                 } else {
                     //Note successfully updated
                     console.log(result)
-                    res.status(200).json({ message: 'Note updated', note })
+                    res.status(200).json({ message: 'Note updated', note:result })
                 }
             })
 
