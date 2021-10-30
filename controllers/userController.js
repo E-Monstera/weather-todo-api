@@ -26,7 +26,8 @@ exports.signup_user = [
                 let userDetail = {
                     username: req.body.username,
                     email: req.body.email,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    units: 'imperial'
                 };
 
                 let user = new User(userDetail);
@@ -35,7 +36,8 @@ exports.signup_user = [
                         res.status(200).json({
                             'Message': 'user Created', user: {
                                 username: req.body.username,
-                                email: req.body.email
+                                email: req.body.email,
+                                units: 'imperial'
                             }
                         })
                     }
@@ -54,7 +56,7 @@ exports.login_user = function (req, res, next) {
     let { email, password } = req.body;
 
     //Check if user exists in the database
-    User.findOne({ email})
+    User.findOne({ email })
         .then(user => {
             if (!user) {
                 //User doesn't exist, return error message
@@ -74,6 +76,7 @@ exports.login_user = function (req, res, next) {
                             _id: user._id,
                             username: user.username,
                             email: user.email,
+                            units: user.units
                         }
                         if (user.location) {
                             theUser.location = user.location;
@@ -96,23 +99,48 @@ exports.login_user = function (req, res, next) {
 }
 
 exports.auth_user = function (req, res, next) {
-    console.log('in auth_user')
     return res.status(200).json({ user: req.user });
 }
 
-exports.update_user = [
-        // sanitize user input
-        body('location', 'Location is required').escape().trim(),
-    
-        (req, res, next) => {
-            const errors = validationResult(req);
-    
-            if (!errors.isEmpty()) {
-                // There were errors during validation, return 
-                res.status(400).json({ errArr: errors.array() });
+// Function to edit the units for a user
+exports.put_user_units = function (req, res, next) {
+    console.log('made it in function')
+    User.findById(req.user._id)
+        .exec((err, results) => {
+            if (err) {
+                return next(err)
             } else {
-                //There were no errors, find and update the user
-                User.findById(req.user._id)
+                let user = results;
+                if (user.units === 'imperial') {
+                    user.units = 'metric'
+                } else {
+                    user.units = 'imperial'
+                }
+                User.findByIdAndUpdate(req.user._id, user, {})
+                    .exec(function (err) {
+                        if (err) {
+                            return next(err)
+                        } else {
+                            res.status(200).json({ message: 'user updated', user })
+                        }
+                    })
+            }
+
+        })
+}
+exports.update_user = [
+    // sanitize user input
+    body('location', 'Location is required').escape().trim(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            // There were errors during validation, return 
+            res.status(400).json({ errArr: errors.array() });
+        } else {
+            //There were no errors, find and update the user
+            User.findById(req.user._id)
                 .exec((err, results) => {
                     if (err) {
                         return next(err)
@@ -125,11 +153,11 @@ exports.update_user = [
                             if (err) {
                                 return next(err);
                             } else {
-                                res.status(200).json({message: 'User location updated'})
+                                res.status(200).json({ message: 'User location updated' })
                             }
                         }))
                     }
                 })
-            }
         }
+    }
 ]

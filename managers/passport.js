@@ -21,7 +21,8 @@ passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
             _id: returnedUser._id,
             username: returnedUser.username,
             email: returnedUser.email,
-            location: returnedUser.location
+            location: returnedUser.location,
+            units: returnedUser.units
         }
 
         // If there is an error, return the error

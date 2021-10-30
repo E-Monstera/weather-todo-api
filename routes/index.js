@@ -43,4 +43,7 @@ router.get('/session', passport.authenticate('jwt', { session: false }), userCon
 //Route to update a users location
 router.put('/user/location', passport.authenticate('jwt', { session: false }), userController.update_user);
 
+//Route to update a users preferred units
+router.put('/user/units', passport.authenticate('jwt', { session: false }), userController.put_user_units);
+
 module.exports = router;
