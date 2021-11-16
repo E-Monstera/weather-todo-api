@@ -1,7 +1,6 @@
 const { default: axios } = require('axios');
 var express = require('express');
 var router = express.Router();
-require('dotenv').config();
 const passport = require('passport')
 const todoController = require('../controllers/todoController')
 const noteController = require('../controllers/noteController')

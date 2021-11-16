@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-require('dotenv').config();
 const passport = require('passport')
 const userController = require('../controllers/userController')
 const apiController = require('../controllers/apiController');
