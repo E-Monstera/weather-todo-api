@@ -6,6 +6,7 @@
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www"
   },
+  "engines": {"node": "15.8.0"},
   "dependencies": {
     "async": "^3.2.1",
     "axios": "^0.23.0",
