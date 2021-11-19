@@ -25,8 +25,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors({
-  // origin: /\.elisabethoconnor\.com$/
-  origin: 'http://localhost:3000'
+  origin: /\.elisabethoconnor\.com$/
+  // origin: 'http://localhost:3000'
 }))
 
 
